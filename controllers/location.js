@@ -5,6 +5,8 @@ const currentDate = new Date().toISOString().slice(0, 10);
 // Takes longitude and latitude coordinates from the request body
 // and assigns a slugname and creation date to the location.
 export const createLocation = async (req, res, next) => {
+  const { latitude: latitudeParam, longitude: longitudeParam } = req.params;
+  console.log("req params", req.params);
   const { longitude, latitude } = req.body;
   console.log("rea", req.body);
   //prettier-ignore
@@ -31,6 +33,8 @@ export const createLocation = async (req, res, next) => {
 // TODO: HANDLE EMPTY REQUEST PARAMS
 export const getLocation = async (req, res, next) => {
   console.log("req body", req.body);
+  console.log("req params", req.params);
+
   const { id, slugname } = req.body;
   let queryString = "";
   slugname === undefined
@@ -58,7 +62,8 @@ export const getLocation = async (req, res, next) => {
 
 // Deletes a location from the database based on ID or the slugname
 export const deleteLocation = async (req, res, next) => {
-  const { id, slugname } = req.body;
+  console.log("delete req params", req.params);
+  const { id, slugname } = req.params;
   console.log("delete slugname", slugname);
   let queryString = "";
   slugname === undefined
@@ -67,7 +72,7 @@ export const deleteLocation = async (req, res, next) => {
 
   // Ecexute and handle DELETE query
   const queryResult = await poolQuery(queryString);
-  console.log("queryResult", queryResult);
+  // console.log("queryResult", queryResult);
   const { id: resultId, slugname: resultSlugname } = queryResult.rows[0];
   res.status(200).send(`
   Location with ID: ${resultId} and slugname ${resultSlugname} has been deleted
@@ -83,9 +88,10 @@ export const deleteLocation = async (req, res, next) => {
 //TODO
 // ADD FUCNTION TO MAKE STRING URL SAFE
 export const updateLocation = async (req, res, next) => {
-  const { oldSlugname, newSlugname } = req.body;
+  console.log("update req params", req.params);
+  const { oldname, newname } = req.params;
   console.log("update req body", req.body);
-  const queryString = `UPDATE "location" SET slugname = '${newSlugname.trim()}' WHERE slugname = '${oldSlugname}' RETURNING *`;
+  const queryString = `UPDATE "location" SET slugname = '${newname.trim()}' WHERE slugname = '${oldname.trim()}' RETURNING *`;
 
   // Execute and handle UPDATE query
   const queryResult = await poolQuery(queryString);
@@ -97,14 +103,14 @@ export const updateLocation = async (req, res, next) => {
     longitude,
     creationdate: creationDate,
   } = queryResultRows;
-  console.log("update query result", queryResult);
+  // console.log("update query result", queryResult);
   res.status(200).send(`
-  Location with slugname ${oldSlugname} has been updated
-  ${id},
-  ${slugname},
-  ${latitude},
-  ${longitude},
-  ${creationDate.toISOString().slice(0, 10)}
+  Location with slugname ${oldname} has been updated
+  id: ${id},
+  slugname: ${slugname},
+  latitude: ${latitude},
+  longitude: ${longitude},
+  creationDte: ${creationDate.toISOString().slice(0, 10)}
   `);
 };
 

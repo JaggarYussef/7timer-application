@@ -11,10 +11,12 @@ import { Router } from "express";
 const router = Router();
 
 //Location CRUD routes
-router.post("/addLocation", createLocation);
-router.get("/getLocation", getLocation);
-router.delete("/deleteLocation", deleteLocation);
-router.put("/updateLocation", updateLocation);
+// prettier-ignore
+router.post("/addLocation/latitude=:latitude&longitude=:longitude", createLocation);
+router.get("/getLocation/slugname=:slugname&id:id", getLocation);
+router.delete("/deleteLocation/id=:id&slugname=:slugname", deleteLocation);
+// prettier-ignore
+router.put("/updateLocation/oldname=:oldname&newname=:newname", updateLocation);
 router.get("/getAllLocations", getAllLocations);
 
 export default router;

@@ -32,7 +32,12 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-app.listen(8080, () => console.log("Listening on port 8080"));
+app.listen(8080, () =>
+  console.warn(`
+WARNING: REQUEST PARAMETERS NEED TESTING
+Listening on port 8080
+`)
+);
 // cron.schedule("*/30 * * * * *", () => {
 //   updateTemperatures();
 // });
